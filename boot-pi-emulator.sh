@@ -30,7 +30,7 @@ if [ -z "$DISK_TO_INSTALL_TO" ] && [ -e "vm-files/partitioned-disk-name.txt" ] ;
             echo ""
         fi
 
-        read -p "Continue using previously-selected disk $DISK_TO_INSTALL_TO?" YN
+        read -p "Continue using previously-selected disk $DISK_TO_INSTALL_TO? " YN
         if ! grep -q "y" <<< "$YN" ; then
             echo "Exiting..."
             exit 1
@@ -133,14 +133,16 @@ fi
 
 echo ""
 
+KERNEL_IMG=$(sudo find "vm-files/disk_root" -iname 'kernel*.img')
+echo "KERNEL_IMG=$KERNEL_IMG"
 
-echo qemu-system-aarch64 \
+sudo qemu-system-aarch64 \
     -M raspi3b \
     -cpu cortex-a72 \
     -append "rw earlyprintk loglevel=8 console=ttyAMA0,115200 dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootdelay=1" \
     -dtb "vm-files/bcm2710-rpi-3-b-plus.dtb" \
-    -sd $DISK_TO_INSTALL_TO \
-    -kernel kernel8.img \
+    -drive file="$DISK_TO_INSTALL_TO",format=raw,media=disk \
+    -kernel "$KERNEL_IMG" \
     -m 1G -smp 4 \
     -serial stdio \
     -usb -device usb-mouse -device usb-kbd \
