@@ -29,19 +29,57 @@ if [ -z "$DISK_TO_INSTALL_TO" ] ; then
         echo "<Please install 'lshw' for a list of disks, vendors, and sizes>"
         echo ""
     fi
-    read -p "Which disk (under /dev/) should be installed to?" DISK_TO_INSTALL_TO
+    read -p "Which disk (under /dev/) should be installed to? " DISK_TO_INSTALL_TO
 fi
 
-echo "Booting to $DISK_TO_INSTALL_TO"
+echo "Using disk $DISK_TO_INSTALL_TO"
 
 mkdir -p vm-files
+
 if ! [ -e "vm-files/bcm2710-rpi-3-b-plus.dtb" ] ; then
     wget -O "vm-files/bcm2710-rpi-3-b-plus.dtb" "https://farabimahmud.github.io/emulate-raspberry-pi3-in-qemu/bcm2710-rpi-3-b-plus.dtb"
 fi
 
-exit 5
+if ! [ -e "vm-files/ArchLinuxARM-rpi-aarch64-latest.tar.gz" ] ; then
+    wget -O "vm-files/ArchLinuxARM-rpi-aarch64-latest.tar.gz" "http://os.archlinuxarm.org/os/ArchLinuxARM-rpi-aarch64-latest.tar.gz"
+fi
 
-qemu-system-aarch64 \
+# Partition $DISK_TO_INSTALL_TO IF not already partitioned!
+echo ""
+touch "vm-files/partitioned-disk-name.txt"
+fdisk -l "$DISK_TO_INSTALL_TO"
+if ! grep -q "$DISK_TO_INSTALL_TO" "vm-files/partitioned-disk-name.txt" ; then
+    read -p "About to partition $DISK_TO_INSTALL_TO, continue? (y/n) " YN
+    if ! grep -q "y" <<< "$YN" ; then
+        echo "Exiting..."
+        exit 1
+    fi
+    sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' << EOF | sudo fdisk "$DISK_TO_INSTALL_TO"
+  o # clear the in memory partition table
+  n # new partition
+  p # primary partition
+  1 # partition number 1
+    # default - start at beginning of disk 
+  +250M # 250 MB boot parttion
+  t # change type
+  c # set the first partition to type W95 FAT32 (LBA)
+  n # new partition
+  p # primary partition
+  2 # partion number 2
+    # default, start immediately after preceding partition
+    # default, extend partition to end of disk
+  w # write the partition table
+  q # and we're done
+EOF
+    echo "$DISK_TO_INSTALL_TO" > "vm-files/partitioned-disk-name.txt" 
+fi
+echo "Partitioning complete"
+
+
+echo ""
+
+
+echo qemu-system-aarch64 \
     -M raspi3b \
     -cpu cortex-a72 \
     -append "rw earlyprintk loglevel=8 console=ttyAMA0,115200 dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootdelay=1" \
