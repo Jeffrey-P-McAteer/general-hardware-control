@@ -141,7 +141,7 @@ sudo qemu-system-aarch64 \
     -cpu cortex-a72 \
     -append "rw earlyprintk loglevel=8 console=ttyAMA0,115200 dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootdelay=1" \
     -dtb "vm-files/bcm2710-rpi-3-b-plus.dtb" \
-    -drive file="$DISK_TO_INSTALL_TO",format=raw,media=disk \
+    -drive file="$DISK_TO_INSTALL_TO",format=raw,media=disk,if=sd \
     -kernel "$KERNEL_IMG" \
     -m 1G -smp 4 \
     -serial stdio \
