@@ -133,20 +133,29 @@ fi
 
 echo ""
 
-KERNEL_IMG=$(sudo find "vm-files/disk_root" -iname 'kernel*.img')
-echo "KERNEL_IMG=$KERNEL_IMG"
+# Boot into a ~systemd-nspawn container~ boring chroot, b/c easy!
+sudo systemctl restart systemd-binfmt.service
 
-sudo qemu-system-aarch64 \
-    -M raspi3b \
-    -cpu cortex-a72 \
-    -append "rw earlyprintk loglevel=8 console=ttyAMA0,115200 dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootdelay=1" \
-    -dtb "vm-files/bcm2710-rpi-3-b-plus.dtb" \
-    -drive file="$DISK_TO_INSTALL_TO",format=raw,media=disk,if=sd \
-    -kernel "$KERNEL_IMG" \
-    -m 1G -smp 4 \
-    -serial stdio \
-    -usb -device usb-mouse -device usb-kbd \
-  -device usb-net,netdev=net0 \
-  -netdev user,id=net0,hostfwd=tcp::5555-:22 \
+sudo arch-chroot ./vm-files/disk_root
+
+
+
+# VM approach is a little borked b/c of QEMU's sd card size checker
+
+# KERNEL_IMG=$(sudo find "vm-files/disk_root" -iname 'kernel*.img')
+# echo "KERNEL_IMG=$KERNEL_IMG"
+
+# sudo qemu-system-aarch64 \
+#     -M raspi3b \
+#     -cpu cortex-a72 \
+#     -append "rw earlyprintk loglevel=8 console=ttyAMA0,115200 dwc_otg.lpm_enable=0 root=/dev/mmcblk0p2 rootdelay=1" \
+#     -dtb "vm-files/bcm2710-rpi-3-b-plus.dtb" \
+#     -drive file="$DISK_TO_INSTALL_TO",format=raw,media=disk,if=sd \
+#     -kernel "$KERNEL_IMG" \
+#     -m 1G -smp 4 \
+#     -serial stdio \
+#     -usb -device usb-mouse -device usb-kbd \
+#   -device usb-net,netdev=net0 \
+#   -netdev user,id=net0,hostfwd=tcp::5555-:22 \
 
 
