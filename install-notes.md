@@ -57,6 +57,9 @@ EOF
 pacman -S iwd
 systemctl enable iwd.service
 
+pacman -S dhcpcd
+systemctl enable dhcpcd.service
+
 systemctl enable health-check.timer
 
 
