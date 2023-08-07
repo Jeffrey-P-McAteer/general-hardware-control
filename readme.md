@@ -14,4 +14,11 @@ todo
 
 todo
 
+# Links
+
+ - https://buildyourcnc.com/item/electronicsAndMotors-electronic-component-breakout-Mach3-USB-Board
+ - http://linuxcnc.org/docs/stable/html/getting-started/system-requirements.html
+ 
+
+
 
