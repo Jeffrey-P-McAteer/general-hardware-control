@@ -46,34 +46,59 @@ void hstep2(int x, int y)
 
 int main(int argc, char *argv[])
 {
-  int i,j,x=0,y=0;
+  int x=0;
+  int y=0;
 
   assert(gpioInitialise()>=0);
 
-  for(i=0; i<M; ++i)
-    for(j=0; j<N; ++j)
-    {
+  for (int i=0; i<M; ++i) {
+    for (int j=0; j<N; ++j) {
       gpioSetMode(m[i][j], PI_OUTPUT);
       gpioWrite(m[i][j], 0);
     }
+  }
 
   hstep2(x,y);
 
-  for(i=0; i<L/2; ++i) hstep2(x,++y);
-  for(i=0; i<L; ++i) hstep2(x,--y);
-  for(i=0; i<L/2; ++i) hstep2(x,++y);
+  for (int i=0; i<L/2; ++i) {
+    hstep2(x,++y);
+  }
+  for (int i=0; i<L; ++i) {
+    hstep2(x,--y);
+  }
+  for (int i=0; i<L/2; ++i) {
+    hstep2(x,++y);
+  }
 
-  for(i=0; i<L/2; ++i) hstep2(++x,y);
-  for(i=0; i<L; ++i) hstep2(--x,y);
-  for(i=0; i<L/2; ++i) hstep2(++x,y);
+  for (int i=0; i<L/2; ++i) {
+    hstep2(++x,y);
+  }
+  for (int i=0; i<L; ++i) {
+    hstep2(--x,y);
+  }
+  for (int i=0; i<L/2; ++i) {
+    hstep2(++x,y);
+  }
      
-  for(i=0; i<L/2; ++i) hstep2(++x,++y);
-  for(i=0; i<L; ++i) hstep2(--x,--y);
-  for(i=0; i<L/2; ++i) hstep2(++x,++y);
+  for (int i=0; i<L/2; ++i) {
+    hstep2(++x,++y);
+  }
+  for (int i=0; i<L; ++i) {
+    hstep2(--x,--y);
+  }
+  for (int i=0; i<L/2; ++i) {
+    hstep2(++x,++y);
+  }
      
-  for(i=0; i<L/2; ++i) hstep2(--x,++y);
-  for(i=0; i<L; ++i) hstep2(++x,--y);
-  for(i=0; i<L/2; ++i) hstep2(--x,++y);
+  for (int i=0; i<L/2; ++i) {
+    hstep2(--x,++y);
+  }
+  for (int i=0; i<L; ++i) {
+    hstep2(++x,--y);
+  }
+  for (int i=0; i<L/2; ++i) {
+    hstep2(--x,++y);
+  }
      
   gpioTerminate();
 }
