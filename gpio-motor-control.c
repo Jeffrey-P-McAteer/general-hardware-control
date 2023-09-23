@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include <assert.h>
 
+#include <sys/time.h>
+
 #include <pigpio.h>
 
 #define L 1024
@@ -41,15 +43,35 @@ void hstep(int mn, unsigned v)
 
 void hstep2(int x, int y)
 {
-  hstep(0,x); hstep(1,y); usleep(D);
+  struct timeval begin_tv;
+  gettimeofday(&begin_tv,NULL);
+
+  hstep(0,x);
+  hstep(1,y);
+  
+  //usleep(D);
+
+  // We're no longer sleeping, we're polling!
+  struct timeval now_tv;
+  struct timeval elapsed_tv;
+  do {
+    gettimeofday(&now_tv,NULL);
+    timersub(&now_tv, &begin_tv, &elapsed_tv);
+
+  }
+  while (elapsed_tv.tv_usec < D && elapsed_tv.tv_sec == 0);
+
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char** argv)
 {
   int x=0;
   int y=0;
 
-  assert(gpioInitialise()>=0);
+  if (!(gpioInitialise()>=0)) {
+    printf("Error in gpioInitialise(), exiting!\n");
+    return 1;
+  }
 
   for (int i=0; i<M; ++i) {
     for (int j=0; j<N; ++j) {
