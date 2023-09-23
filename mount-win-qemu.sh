@@ -22,7 +22,7 @@ sudo mount /dev/nbd0p1 "$win_xp_c_root"
 echo ''
 echo "Windows XP C: drive mounted at $win_xp_c_root"
 echo ''
-echo ls -alh "$win_xp_c_root"
+ls -alh "$win_xp_c_root"
 echo ''
 
 
