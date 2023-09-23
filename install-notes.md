@@ -74,8 +74,9 @@ lsusb # Found "RobotAndRobot.com RNR ECO MOTION 2.0"
 sudo pacman -S ntp
 sudo systemctl enable --now ntpd.service
 
-sudo pacman -Sy git base-devel wget
+sudo pacman -Sy git base-devel wget python python-pip
 sudo pacman -Sy xmlto kmod inetutils bc libelf git cpio perl tar xz
+
 
 # Build a linux realtime kernel via
 # https://wiki.archlinux.org/title/Kernel/Traditional_compilation#Preparation
