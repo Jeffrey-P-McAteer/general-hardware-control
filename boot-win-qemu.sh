@@ -33,7 +33,9 @@ if mount | grep -qi "$win_xp_c_root" ; then
   sudo qemu-nbd -d /dev/nbd0 || true
 fi
 
-qemu-system-i386 \
+xhost + local: || true
+
+sudo qemu-system-i386 \
   -enable-kvm -cpu host -m 712M \
   -vga std -net nic,model=rtl8139 -net user \
   -drive file="$win_xp_qcow2" \
