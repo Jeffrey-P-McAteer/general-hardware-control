@@ -128,6 +128,7 @@ makepkg -si
 ###
 
 yay -Sy pigpio
+# Possibly; sudo systemctl enable --now pigpiod.service
 
 gcc -g -o gpio-motor-control gpio-motor-control.c -lpigpio -lrt -lpthread
 
