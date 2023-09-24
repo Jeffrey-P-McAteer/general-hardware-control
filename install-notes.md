@@ -116,4 +116,20 @@ cp -v arch/x86/boot/bzImage /boot/vmlinuz-linux64-rt
 
 
 
+## Yay
+cd /opt/
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+
+
+###
+## C Code build below
+###
+
+yay -Sy pigpio
+
+gcc -g -o gpio-motor-control gpio-motor-control.c -lpigpio -lrt -lpthread
+
+
 ```
